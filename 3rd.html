@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIY Home Projects</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f5f5f5;
+        color: #333;
+      }
+      header {
+        background: #34495e;
+        color: #fff;
+        padding: 40px;
+        text-align: center;
+        font-family: "Playfair Display", serif;
+      }
+      header h1 {
+        font-size: 2.5em;
+        margin: 0;
+      }
+      header p {
+        font-size: 1.3em;
+        margin-top: 10px;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        background: #34495e;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      nav li {
+        position: relative;
+        margin: 0 15px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1em;
+        transition: color 0.3s, transform 0.3s;
+      }
+      nav a:hover {
+        color: #ecf0f1;
+        transform: scale(1.1);
+      }
+      nav ul ul {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #34495e;
+        display: none;
+        padding: 15px;
+        border-radius: 8px;
+        min-width: 200px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      nav li:hover > ul {
+        display: block;
+      }
+      nav ul ul li {
+        margin: 0;
+      }
+      nav ul ul a {
+        padding: 10px;
+        display: block;
+        color: #fff;
+        font-size: 1em;
+        transition: background-color 0.3s;
+      }
+      nav ul ul a:hover {
+        background-color: #2c3e50;
+      }
+      .container {
+        padding: 30px;
+      }
+      .section {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        margin: 30px 0;
+        padding: 30px;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .section:hover {
+        transform: scale(1.03);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #34495e;
+        color: #fff;
+      }
+      @media (max-width: 500px) {
+        nav {
+          flex-direction: column;
+        }
+        nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+        nav li {
+          margin: 10px 0;
+        }
+        nav ul ul {
+          position: static;
+          display: none;
+          width: 100%;
+        }
+        nav li:hover > ul {
+          display: block;
+        }
+      }
+      @media (max-width: 480px) {
+        header h1 {
+          font-size: 2em;
+        }
+        header p {
+          font-size: 1.1em;
+        }
+        .section {
+          padding: 20px;
+        }
+        .video-container {
+          margin-bottom: 20px;
+        }
+        .video-container iframe {
+          width: 100%;
+          height: auto;
+        }
+      }
+      .video-container {
+        position: relative;
+        padding-bottom: 50%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        max-width: 80%;
+        margin: 0 auto 20px;
+        background: #000;
+        border-radius: 10px;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .community-resource {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .community-resource-item {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s, transform 0.3s;
+      }
+      .community-resource-item:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+      }
+      .community-resource-item h3 {
+        margin-top: 0;
+        color: #34495e;
+      }
+      .community-resource-item p {
+        margin-bottom: 15px;
+        color: #666;
+      }
+      .project-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .project-form label {
+        font-weight: 600;
+      }
+      .project-form input,
+      .project-form textarea,
+      .project-form select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        font-size: 1em;
+      }
+      .project-form textarea {
+        resize: vertical;
+      }
+      .project-form button {
+        padding: 15px;
+        background: #34495e;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+      }
+      .project-form button:hover {
+        background: #2c3e50;
+        transform: scale(1.05);
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #34495e;
+        text-align: center;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s, transform 0.3s;
+        border: none;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #2c3e50;
+        transform: translateY(-2px);
+      }
+      .view-more-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 15px;
+      }
+      .view-more {
+        background-color: #34495e;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+      .view-more:hover {
+        background-color: #2c3e50;
+      }
+
+      /* Project of the Month Section */
+      .project-of-the-month {
+        background: #fff;
+        padding: 50px;
+        text-align: center;
+        border-radius: 15px;
+        margin: 30px auto;
+        max-width: 90%;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      .project-title {
+        font-size: 2em;
+        color: #34495e;
+        margin-bottom: 20px;
+      }
+      .project-description {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 30px;
+      }
+      .project-image {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        border-radius: 10px;
+        margin: 0 auto;
+      }
+
+      /* Drag-and-Drop Workspace */
+      .components {
+        width: 30%;
+        background: #3498db;
+        border-radius: 15px;
+        padding: 20px;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+
+      .component-item {
+        background: #2980b9;
+        border: 1px solid #fff;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 10px 0;
+        cursor: move;
+        transition: background 0.3s;
+      }
+
+      .component-item:hover {
+        background: #1f618d;
+      }
+
+      .workspace {
+        width: 65%;
+        background: #ecf0f1;
+        border-radius: 15px;
+        padding: 20px;
+        min-height: 400px;
+        position: relative;
+      }
+
+      .component-item-placeholder {
+        border: 2px dashed #3498db;
+        height: 150px;
+        margin: 10px 0;
+        text-align: center;
+        line-height: 150px;
+        color: #3498db;
+        font-weight: 600;
+      }
+
+      .workspace .component-item {
+        position: absolute;
+        width: 100px;
+        height: 50px;
+      }
+
+      .component-item-text {
+        color: #fff;
+      }
+
+      .export-button {
+        padding: 12px 24px;
+        background-color: #2c3e50;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      .export-button:hover {
+        background-color: #34495e;
+        transform: scale(1.05);
+      }
+
+      .export-button:disabled {
+        background-color: #7f8c8d;
+        cursor: not-allowed;
+      }
+
+      .success-message {
+        color: #27ae60;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+
+      .error-message {
+        color: #e74c3c;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>DIY Home Projects</h1>
+      <p>Your go-to platform for all things DIY</p>
+    </header>
+
+    <nav>
+      <ul>
+        <li>
+          <a href="#guides">Project Guides</a>
+          <ul>
+            <li><a href="#woodworking">Woodworking</a></li>
+            <li><a href="#home-improvement">Home Improvement</a></li>
+            <li><a href="#crafts-decor">Crafts & Decor</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#videos">Video Tutorials</a>
+          <ul>
+            <li><a href="#woodworking-videos">Woodworking Videos</a></li>
+            <li>
+              <a href="#home-improvement-videos">Home Improvement Videos</a>
+            </li>
+            <li><a href="#crafting-diy">Crafting & DIY</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#community">Community & Resources</a>
+          <ul>
+            <li><a href="#forum">Forum</a></li>
+            <li><a href="#local-resources">Local Resources</a></li>
+            <li><a href="#share">Submit a Project</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- New Project of the Month Section -->
+    <section class="project-of-the-month">
+      <h2 class="project-title">Project of the Month: Cozy Wooden Bookshelf</h2>
+      <p class="project-description">
+        This month's featured project is a charming wooden bookshelf that's both
+        functional and aesthetically pleasing. Perfect for adding a rustic touch
+        to any room in your home.
+      </p>
+      <img
+        class="project-image"
+        src="https://knockoffdecor.com/wp-content/uploads/2018/02/bookshelfchair.jpg"
+        alt="Cozy Wooden Bookshelf"
+      />
+    </section>
+
+    <div class="container" id="woodworking">
+      <h2>Woodworking Projects</h2>
+      <div class="section">
+        <h3>Build a Wooden Table</h3>
+        <p>
+          Learn how to build a sturdy wooden table from scratch with this
+          comprehensive guide...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="section">
+        <h3>Construct a Bookshelf</h3>
+        <p>
+          Follow our step-by-step instructions to create a beautiful and
+          functional bookshelf...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="view-more-container">
+        <a href="#" class="view-more">View More Projects</a>
+      </div>
+    </div>
+
+    <div class="container" id="home-improvement">
+      <h2>Home Improvement Projects</h2>
+      <div class="section">
+        <h3>Install a Ceiling Fan</h3>
+        <p>
+          Follow these steps to install a ceiling fan in your home safely and
+          efficiently...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="section">
+        <h3>Paint a Room</h3>
+        <p>
+          Discover the best techniques for painting a room like a pro with our
+          detailed guide...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="view-more-container">
+        <a href="#" class="view-more">View More Projects</a>
+      </div>
+    </div>
+
+    <div class="container" id="crafts-decor">
+      <h2>Crafts & Decor Projects</h2>
+      <div class="section">
+        <h3>DIY Wall Art</h3>
+        <p>
+          Create unique and personalized wall art to beautify your living
+          space...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="section">
+        <h3>Handmade Candle Holders</h3>
+        <p>
+          Explore creative ways to make handmade candle holders for your home...
+        </p>
+        <a href="#" class="button">More</a>
+      </div>
+      <div class="view-more-container">
+        <a href="#" class="view-more">View More Projects</a>
+      </div>
+    </div>
+
+    <div class="container" id="videos">
+      <h2>Video Tutorials</h2>
+      <div class="section" id="woodworking-videos">
+        <h3>Woodworking Videos</h3>
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="view-more-container">
+          <a href="#" class="button view-more">View More</a>
+        </div>
+      </div>
+      <div class="section" id="home-improvement-videos">
+        <h3>Home Improvement Videos</h3>
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_2"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="view-more-container">
+          <a href="#" class="button view-more">View More</a>
+        </div>
+      </div>
+      <div class="section" id="crafting-diy">
+        <h3>Crafting & DIY Videos</h3>
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/VIDEO_ID_3"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="view-more-container">
+          <a href="#" class="button view-more">View More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="forum">
+      <h2>Forum</h2>
+      <div class="community-resource">
+        <div class="community-resource-item">
+          <h3>Join the Discussion</h3>
+          <p>
+            Participate in discussions, ask questions, and share your knowledge
+            with other DIY enthusiasts.
+          </p>
+          <a href="#" class="button">Go to Forum</a>
+        </div>
+        <div class="community-resource-item">
+          <h3>Latest Topics</h3>
+          <p>Check out the latest topics and threads in the forum.</p>
+          <a href="#" class="button">View Topics</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="local-resources">
+      <h2>Local Resources</h2>
+      <div class="community-resource">
+        <div class="community-resource-item">
+          <h3>Find Local Stores</h3>
+          <p>
+            Locate nearby stores that sell tools and materials for your DIY
+            projects.
+          </p>
+          <a href="#" class="button">Find Stores</a>
+        </div>
+        <div class="community-resource-item">
+          <h3>Workshops and Events</h3>
+          <p>
+            Discover local workshops and events related to DIY and home
+            improvement.
+          </p>
+          <a href="#" class="button">Explore Workshops</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="share">
+      <h2>Submit a Project</h2>
+      <div class="community-resource">
+        <div class="community-resource-item">
+          <h3>Share Your DIY Projects</h3>
+          <p>
+            Submit your own DIY projects and tutorials to be featured on our
+            platform.
+          </p>
+        </div>
+        <div class="community-resource-item">
+          <h3>Project Submission Form</h3>
+          <form class="project-form">
+            <label for="project-title">Project Title:</label>
+            <input
+              type="text"
+              id="project-title"
+              name="project-title"
+              required
+            />
+
+            <label for="project-description">Project Description:</label>
+            <textarea
+              id="project-description"
+              name="project-description"
+              rows="4"
+              required
+            ></textarea>
+
+            <label for="project-category">Category:</label>
+            <select id="project-category" name="project-category" required>
+              <option value="">Select Category</option>
+              <option value="woodworking">Woodworking</option>
+              <option value="home-improvement">Home Improvement</option>
+              <option value="crafts-decor">Crafts & Decor</option>
+            </select>
+
+            <label for="project-link">Project Link (optional):</label>
+            <input type="url" id="project-link" name="project-link" />
+
+            <label for="project-image">Project Image (optional):</label>
+            <input
+              type="file"
+              id="project-image"
+              name="project-image"
+              accept="image/*"
+            />
+
+            <button type="submit" class="button">Submit Project</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <a href="workspace.html">Go to workspace </a>
+
+    <footer>
+      <p>&copy; 2024 DIY Home Projects</p>
+    </footer>
+  </body>
+</html>
