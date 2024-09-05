@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIY Project Workspace</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .components {
+        width: 30%;
+        background: #3498db;
+        border-radius: 15px;
+        padding: 20px;
+        color: #fff;
+      }
+
+      .component-item {
+        background: #2980b9;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: move;
+      }
+
+      .workspace {
+        width: 65%;
+        background: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        position: relative;
+        min-height: 500px;
+        border: 2px dashed #34495e;
+        overflow: hidden;
+        background-image: linear-gradient(
+            rgba(200, 200, 200, 0.1) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(200, 200, 200, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+
+      .component-dropped {
+        position: absolute;
+        background: #ecf0f1;
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        cursor: move;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+        user-select: none;
+        min-width: 100px;
+        min-height: 50px;
+      }
+
+      .delete-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+        display: none;
+      }
+
+      .component-dropped:hover .delete-btn,
+      .component-dropped:hover .resize-handle {
+        display: block;
+      }
+
+      .resize-handle {
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        width: 10px;
+        height: 10px;
+        background: #3498db;
+        cursor: se-resize;
+        display: none;
+      }
+
+      .export-btn {
+        margin-top: 10px;
+        padding: 10px;
+        background: #2ecc71;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .components,
+        .workspace {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="components">
+      <h2>Components</h2>
+      <div
+        class="component-item"
+        draggable="true"
+        data-name="Button"
+        data-details="Interactive button"
+      >
+        Button
+      </div>
+      <div
+        class="component-item"
+        draggable="true"
+        data-name="Text Input"
+        data-details="User input field"
+      >
+        Text Input
+      </div>
+      <div
+        class="component-item"
+        draggable="true"
+        data-name="Image"
+        data-details="Visual element"
+      >
+        Image
+      </div>
+    </div>
+
+    <div class="workspace" id="workspace">
+      <h2>Workspace</h2>
+      <button class="export-btn">Export as PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+      const components = document.querySelectorAll(".component-item");
+      const workspace = document.getElementById("workspace");
+      let draggedElement = null;
+      let resizingElement = null;
+      let startX, startY, startWidth, startHeight;
+
+      const saveWorkspace = () => {
+        const components = Array.from(
+          workspace.querySelectorAll(".component-dropped")
+        ).map((comp) => ({
+          name: comp.querySelector("strong").textContent,
+          details: comp.querySelector("small").textContent,
+          left: comp.style.left,
+          top: comp.style.top,
+          width: comp.style.width,
+          height: comp.style.height,
+        }));
+        localStorage.setItem("workspace", JSON.stringify(components));
+      };
+
+      const loadWorkspace = () => {
+        const saved = localStorage.getItem("workspace");
+        if (saved) {
+          JSON.parse(saved).forEach((comp) => {
+            const newComponent = createComponent(comp.name, comp.details);
+            newComponent.style.left = comp.left;
+            newComponent.style.top = comp.top;
+            newComponent.style.width = comp.width;
+            newComponent.style.height = comp.height;
+            workspace.appendChild(newComponent);
+          });
+        }
+      };
+
+      const createComponent = (name, details) => {
+        const newComponent = document.createElement("div");
+        newComponent.classList.add("component-dropped");
+        newComponent.innerHTML = `
+        <strong>${name}</strong><br>
+        <small>${details}</small>
+        <button class="delete-btn">×</button>
+        <div class="resize-handle"></div>
+      `;
+
+        const deleteBtn = newComponent.querySelector(".delete-btn");
+        deleteBtn.addEventListener("click", () => {
+          workspace.removeChild(newComponent);
+          saveWorkspace();
+        });
+
+        newComponent.addEventListener("mousedown", startDragging);
+        newComponent
+          .querySelector(".resize-handle")
+          .addEventListener("mousedown", startResizing);
+
+        return newComponent;
+      };
+
+      const startDragging = (e) => {
+        if (
+          e.target.classList.contains("delete-btn") ||
+          e.target.classList.contains("resize-handle")
+        )
+          return;
+        draggedElement = e.currentTarget;
+        const rect = draggedElement.getBoundingClientRect();
+        draggedElement.dataset.offsetX = e.clientX - rect.left;
+        draggedElement.dataset.offsetY = e.clientY - rect.top;
+      };
+
+      const startResizing = (e) => {
+        e.stopPropagation();
+        resizingElement = e.target.parentElement;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(getComputedStyle(resizingElement).width, 10);
+        startHeight = parseInt(getComputedStyle(resizingElement).height, 10);
+        document.addEventListener("mousemove", resize);
+        document.addEventListener("mouseup", stopResizing);
+      };
+
+      const resize = (e) => {
+        if (resizingElement) {
+          const width = startWidth + e.clientX - startX;
+          const height = startHeight + e.clientY - startY;
+          resizingElement.style.width = `${width}px`;
+          resizingElement.style.height = `${height}px`;
+        }
+      };
+
+      const stopResizing = () => {
+        resizingElement = null;
+        document.removeEventListener("mousemove", resize);
+        document.removeEventListener("mouseup", stopResizing);
+        saveWorkspace();
+      };
+
+      components.forEach((component) => {
+        component.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", component.dataset.name);
+          e.dataTransfer.setData("text/details", component.dataset.details);
+        });
+      });
+
+      workspace.addEventListener("dragover", (e) => e.preventDefault());
+
+      workspace.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const componentName = e.dataTransfer.getData("text/plain");
+        const componentDetails = e.dataTransfer.getData("text/details");
+
+        const newComponent = createComponent(componentName, componentDetails);
+        newComponent.style.left = `${e.clientX - workspace.offsetLeft - 50}px`;
+        newComponent.style.top = `${e.clientY - workspace.offsetTop - 25}px`;
+
+        workspace.appendChild(newComponent);
+        saveWorkspace();
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (draggedElement) {
+          const x =
+            e.clientX - workspace.offsetLeft - draggedElement.dataset.offsetX;
+          const y =
+            e.clientY - workspace.offsetTop - draggedElement.dataset.offsetY;
+          draggedElement.style.left = `${x}px`;
+          draggedElement.style.top = `${y}px`;
+        }
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (draggedElement) {
+          saveWorkspace();
+          draggedElement = null;
+        }
+      });
+
+      document.querySelector(".export-btn").addEventListener("click", () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(20);
+        doc.text("DIY Project Workspace", 10, 20);
+
+        const components = workspace.querySelectorAll(".component-dropped");
+        components.forEach((component, index) => {
+          const name = component.querySelector("strong").textContent;
+          const details = component.querySelector("small").textContent;
+          const x = parseInt(component.style.left) / 5;
+          const y = parseInt(component.style.top) / 5 + 30;
+
+          doc.setFontSize(12);
+          doc.text(`${name}: ${details}`, x, y);
+        });
+
+        doc.save("diy-project-workspace.pdf");
+      });
+
+      loadWorkspace();
+    </script>
+  </body>
+</html>
